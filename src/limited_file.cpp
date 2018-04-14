@@ -11,11 +11,21 @@
 
 cLimitedFile::cLimitedFile(const char* file_name, const size_t max_size_in_bytes) : m_file_name(file_name), m_max_size_in_bytes(max_size_in_bytes), m_current_size_in_bytes(0)  {
     SPIFFS.begin();
-    File log_file = SPIFFS.open(m_file_name, "w");
-    if (log_file) {
-        log_file.println("Starting limited file");
+    if (SPIFFS.exists(m_file_name)) {
+        File log_file = SPIFFS.open(m_file_name, "r");
+        if (log_file) {
+            log_file.println("Starting limited file for existing file");
+            m_current_size_in_bytes = log_file.size();
+            log_file.close();
+        }
     }
-    log_file.close();
+    else {
+        File log_file = SPIFFS.open(m_file_name, "w");
+        if (log_file) {
+            log_file.println("Starting limited file");
+            log_file.close();
+        }
+    }
 }
 
 cLimitedFile::~cLimitedFile() {}

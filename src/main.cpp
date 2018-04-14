@@ -6,15 +6,21 @@
  */
 #include "Arduino.h"
 #include "logger.hpp"
+#include "wifi.hpp"
+#include "rtc_w_ntp.hpp"
 
 // Set LED_BUILTIN if it is not defined by Arduino framework
 // #define LED_BUILTIN 13
+
+cWifi wifi;
 
 void setup()
 {
   // initialize LED digital pin as an output.
   pinMode(LED_BUILTIN, OUTPUT);
 
+  wifi.setup();
+  SETUP_TIME();
 }
 
 void loop()
@@ -31,5 +37,7 @@ void loop()
    // wait for a second
   delay(1000);
 
-  Serial.println("toggled2");
+  wifi.loop();
+
+  LOG_INFO("Finished loop");
 }

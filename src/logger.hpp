@@ -11,6 +11,7 @@
 
 #include "Arduino.h"
 #include "serial.hpp"
+#include "limited_file.hpp"
 
 class cLogger {
 public:
@@ -26,6 +27,7 @@ protected:
     char m_buffer[ MAX_LINE_LEN ];
     char m_format[ MAX_LINE_LEN ];
     cSerial m_serial;
+    cLimitedFile m_log_file;
 
 };
 
