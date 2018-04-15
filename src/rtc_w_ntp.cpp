@@ -20,7 +20,7 @@
 
 cRtcWNtp rtc_w_ntp_inst;
 
-cRtcWNtp::cRtcWNtp(): m_setup_finished(false) {};
+cRtcWNtp::cRtcWNtp(): m_time_ready(false) {};
 cRtcWNtp::~cRtcWNtp() {};
 
 // local port to listen for UDP packets
@@ -72,8 +72,8 @@ void sendNTPpacket(IPAddress& address) {
   udp.endPacket();
 }
 
-time_t getNtpTime()
-{
+time_t getNtpTime() {
+    rtc_w_ntp_inst.disable_get_time();
   IPAddress ntpServerIP; // NTP server's ip address
 
   while (udp.parsePacket() > 0) ; // discard any previously received packets
@@ -93,10 +93,12 @@ time_t getNtpTime()
       secsSince1900 |= (unsigned long)packetBuffer[41] << 16;
       secsSince1900 |= (unsigned long)packetBuffer[42] << 8;
       secsSince1900 |= (unsigned long)packetBuffer[43];
+      rtc_w_ntp_inst.enable_get_time();
       return secsSince1900 - 2208988800UL + timeZone * SECS_PER_HOUR;
     }
   }
   LOG_ERROR("No NTP Response :-(");
+  rtc_w_ntp_inst.disable_get_time();
   return 0; // return 0 if unable to get the time
 }
 
@@ -106,7 +108,7 @@ void cRtcWNtp::setup() {
     LOG_INFO("waiting for sync");
     setSyncProvider(getNtpTime);
     setSyncInterval(300);
-    m_setup_finished = true;
+    m_time_ready = true;
 }
 
 void cRtcWNtp::loop() {}
@@ -115,7 +117,7 @@ void cRtcWNtp::get_time(sTime* time_struct) {
     time_struct->hours = 0;
     time_struct->minutes = 0;
     time_struct->seconds = 0;
-    if (!m_setup_finished) {
+    if (!m_time_ready) {
         return;
     }
     if (timeStatus() != timeNotSet) {
@@ -123,4 +125,12 @@ void cRtcWNtp::get_time(sTime* time_struct) {
         time_struct->minutes = minute();
         time_struct->seconds = second();
     }
+}
+
+void cRtcWNtp::disable_get_time() {
+    m_time_ready = false;
+}
+
+void cRtcWNtp::enable_get_time() {
+    m_time_ready = true;
 }

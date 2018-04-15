@@ -8,11 +8,13 @@
 #include "logger.hpp"
 #include "wifi.hpp"
 #include "rtc_w_ntp.hpp"
+#include "temp_humid_sensor.hpp"
 
 // Set LED_BUILTIN if it is not defined by Arduino framework
 // #define LED_BUILTIN 13
 
 cWifi wifi;
+cTempHumidSensor dht22;
 
 void setup()
 {
@@ -21,6 +23,7 @@ void setup()
 
   wifi.setup();
   SETUP_TIME();
+  dht22.setup();
 }
 
 void loop()
@@ -38,6 +41,7 @@ void loop()
   delay(1000);
 
   wifi.loop();
-
+  dht22.loop();
+  
   LOG_INFO("Finished loop");
 }

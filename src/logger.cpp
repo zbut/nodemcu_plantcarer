@@ -9,6 +9,7 @@
 #include "logger.hpp"
 #include "serial.hpp"
 #include "rtc_w_ntp.hpp"
+#include "FS.h"
 
 cLogger logger_inst;
 

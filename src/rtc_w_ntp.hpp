@@ -21,7 +21,7 @@ struct sTime {
 
 class cRtcWNtp : public cDevice {
 private:
-    bool m_setup_finished;
+    bool m_time_ready;
 public:
     cRtcWNtp();
     ~cRtcWNtp();
@@ -30,6 +30,9 @@ public:
     void loop() override;
 
     void get_time(sTime* time_struct);
+
+    void disable_get_time();
+    void enable_get_time();
 protected:
 
 };

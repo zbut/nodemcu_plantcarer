@@ -10,7 +10,7 @@
 #include <ESP8266WiFi.h>
 #include "logger.hpp"
 
-cWifi::cWifi()  {}
+cWifi::cWifi(): connected(false)  {}
 cWifi::~cWifi() {}
 
 void cWifi::setup() {
@@ -36,4 +36,13 @@ void cWifi::setup() {
     }
 }
 
-void cWifi::loop() {};
+void cWifi::loop() {
+    if (connected && (WiFi.status() != WL_CONNECTED)) {
+        connected = false;
+        LOG_ERROR("Wifi connection lost");
+    }
+    if (!connected && (WiFi.status() == WL_CONNECTED)) {
+        connected = true;
+        LOG_INFO("Wifi reconnected");
+    }
+};

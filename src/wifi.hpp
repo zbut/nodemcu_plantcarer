@@ -14,6 +14,7 @@
 
 class cWifi : public cDevice {
 private:
+    bool connected;
 public:
     cWifi();
     ~cWifi();
