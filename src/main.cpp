@@ -9,12 +9,14 @@
 #include "wifi.hpp"
 #include "rtc_w_ntp.hpp"
 #include "temp_humid_sensor.hpp"
+#include "ultrasonic_distance_sensor.hpp"
 
 // Set LED_BUILTIN if it is not defined by Arduino framework
 // #define LED_BUILTIN 13
 
 cWifi wifi;
 cTempHumidSensor dht22;
+cUltrasonicDistanceSensor hc_sr04;
 
 void setup()
 {
@@ -24,6 +26,7 @@ void setup()
   wifi.setup();
   SETUP_TIME();
   dht22.setup();
+  hc_sr04.setup();
 }
 
 void loop()
@@ -42,6 +45,7 @@ void loop()
 
   wifi.loop();
   dht22.loop();
-  
+  hc_sr04.loop();
+
   LOG_INFO("Finished loop");
 }
