@@ -39,7 +39,7 @@ static const char ntpServerName[] = "us.pool.ntp.org";
 //const int timeZone = -4;  // Eastern Daylight Time (USA)
 //const int timeZone = -8;  // Pacific Standard Time (USA)
 //const int timeZone = -7;  // Pacific Daylight Time (USA)
-const int timeZone = 2;  // Israel
+const int timeZone = 3;  // Israel
 
 const int NTP_PACKET_SIZE = 48; // NTP time stamp is in the first 48 bytes of the message
 

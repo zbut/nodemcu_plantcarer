@@ -11,9 +11,9 @@
 #include "logger.hpp"
 
 // defines pins numbers
-
-const int trigPin = 2;  //D4
-const int echoPin = 0;  //D3
+// Black is gnd and blue is vcc
+const int trigPin = 2;  //D4 - Green
+const int echoPin = 4;  //D2 - Yellow
 
 // defines variables
 long duration;
