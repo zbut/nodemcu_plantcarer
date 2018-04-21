@@ -8,6 +8,7 @@
 
 #include "temp_humid_sensor.hpp"
 #include "logger.hpp"
+#include "status.hpp"
 
 DHTesp dht;
 const int dht_pin = 12; // D6
@@ -34,6 +35,7 @@ TempAndHumidity cTempHumidSensor::get() {
         LOG_ERROR("DHT22 error status: %s", dht.getStatusString());
         return newValues;
     }
+    status_set_temperature(newValues.temperature);
     return newValues;
     //LOG_INFO("Temperature is %d and humidty is %d", int(newValues.temperature), int(newValues.humidity));
 }

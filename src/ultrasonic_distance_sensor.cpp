@@ -9,6 +9,7 @@
 #include "ultrasonic_distance_sensor.hpp"
 #include "arduino.h"
 #include "logger.hpp"
+#include "status.hpp"
 
 // defines pins numbers
 // Black is gnd and blue is vcc
@@ -53,5 +54,6 @@ int cUltrasonicDistanceSensor::get_distance() {
     // Calculating the distance
     distance= duration*0.034/2;
     //LOG_INFO("Distance is %d cm", distance);
+    status_set_water_level(distance);
     return distance;
 }

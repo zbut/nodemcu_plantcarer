@@ -10,6 +10,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 #include "logger.hpp"
+#include "status.hpp"
 
 cLcd::cLcd()  {}
 cLcd::~cLcd() {}
@@ -23,9 +24,31 @@ void cLcd::setup() {
     lcd_i2c.backlight();
 }
 
-void cLcd::loop() {}
+void cLcd::loop() {
+    print_status();
+}
 
 void cLcd::print_line(const char* line) {
     lcd_i2c.setCursor(0, 0);
     lcd_i2c.print(line);
+}
+
+void cLcd::print_status(bool force) {
+    if (status_was_changed() || force) {
+        sStatus status = status_get();
+        status_clear_changed();
+        lcd_i2c.clear();
+        lcd_i2c.print("Status: Wifi:");
+        bool wifi = status.wifi_connected;
+        if (wifi) {
+            lcd_i2c.print("O.K.");
+        }
+        else {
+            lcd_i2c.print("N/A");
+        }
+        lcd_i2c.setCursor(0, 1);
+        char status_line[16];
+        snprintf( status_line , 16, "T:%02i WL:%02i", status.temperature, status.water_level );
+        lcd_i2c.print(status_line);
+    }
 }

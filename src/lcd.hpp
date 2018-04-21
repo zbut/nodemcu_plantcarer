@@ -21,6 +21,7 @@ public:
     void loop() override;
 
     void print_line(const char* line);
+    void print_status(bool force = false);
 
 protected:
 
