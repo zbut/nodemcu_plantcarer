@@ -13,7 +13,7 @@
 // defines pins numbers
 // Black is gnd and blue is vcc
 const int trigPin = 2;  //D4 - Green
-const int echoPin = 4;  //D2 - Yellow
+const int echoPin = 14;  //D5 - Yellow
 
 // defines variables
 long duration;
@@ -25,6 +25,11 @@ cUltrasonicDistanceSensor::~cUltrasonicDistanceSensor() {}
 void cUltrasonicDistanceSensor::setup() {
     pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
     pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+    // Check it is working
+    int distance = get_distance();
+    if (distance == 0) {
+        LOG_ERROR("Distance sensor is not working");
+    }
 }
 
 void cUltrasonicDistanceSensor::loop() {
@@ -47,6 +52,6 @@ int cUltrasonicDistanceSensor::get_distance() {
 
     // Calculating the distance
     distance= duration*0.034/2;
-    LOG_INFO("Distance is %d cm", distance);
+    //LOG_INFO("Distance is %d cm", distance);
     return distance;
 }

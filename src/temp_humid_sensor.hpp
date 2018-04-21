@@ -10,6 +10,7 @@
 #define temp_humid_sensor_hpp
 
 #include "device.hpp"
+#include "DHTesp.h"
 
 class cTempHumidSensor : public cDevice{
 private:
@@ -19,6 +20,8 @@ public:
 
     void setup() override;
     void loop() override;
+
+    TempAndHumidity get();
 protected:
 
 };

@@ -114,17 +114,18 @@ void cRtcWNtp::setup() {
 void cRtcWNtp::loop() {}
 
 void cRtcWNtp::get_time(sTime* time_struct) {
-    time_struct->hours = 0;
-    time_struct->minutes = 0;
-    time_struct->seconds = 0;
-    if (!m_time_ready) {
-        return;
-    }
-    if (timeStatus() != timeNotSet) {
+    if (m_time_ready && (timeStatus() != timeNotSet)) {
         time_struct->hours = hour();
         time_struct->minutes = minute();
         time_struct->seconds = second();
+        time_struct->is_up_time = false;
+        return;
     }
+    int seconds = millis() / 1000;
+    time_struct->seconds = seconds % 60;
+    time_struct->minutes = (seconds / 60) % 60;
+    time_struct->hours = seconds / 3600;
+    time_struct->is_up_time = true;
 }
 
 void cRtcWNtp::disable_get_time() {

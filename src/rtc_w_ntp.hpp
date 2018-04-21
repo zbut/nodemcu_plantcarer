@@ -17,6 +17,7 @@ struct sTime {
    unsigned int hours;
    unsigned int minutes;
    unsigned int seconds;
+   bool is_up_time;
 };
 
 class cRtcWNtp : public cDevice {
