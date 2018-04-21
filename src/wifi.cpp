@@ -10,18 +10,17 @@
 #include <ESP8266WiFi.h>
 #include "logger.hpp"
 #include "status.hpp"
+#include "config.hpp"
 
 cWifi::cWifi(): connected(false)  {}
 cWifi::~cWifi() {}
 
 void cWifi::setup() {
     LOG_INFO("Wifi setup");
-    char ssid[] = "DESKTOP-O98VLDA";  //  your network SSID (name)
-    char pass[] = "6278q3Nn";       // your network password
     WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, pass);
-
-    for (int i=0; i < 100; i++) {
+    WiFi.begin(CONFIG.wifi.ssid, CONFIG.wifi.password);
+    unsigned long cur_time_sec = millis();
+    while ((millis() - cur_time_sec) < (CONFIG.wifi.connection_timout_sec * 1000)) {
         if (WiFi.status() != WL_CONNECTED) {
             delay(500);
         } else {
@@ -33,7 +32,7 @@ void cWifi::setup() {
         LOG_INFO("Wifi connected with IP address %s", ipaddress.c_str());
         connected = true;
     } else {
-        LOG_ERROR("Could not connect to %s", ssid);
+        LOG_ERROR("Could not connect to %s", CONFIG.wifi.ssid);
         connected = false;
     }
     status_set_wifi_connected(connected);

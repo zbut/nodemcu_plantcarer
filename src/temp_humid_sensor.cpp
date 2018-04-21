@@ -9,16 +9,16 @@
 #include "temp_humid_sensor.hpp"
 #include "logger.hpp"
 #include "status.hpp"
+#include "config.hpp"
 
 DHTesp dht;
-const int dht_pin = 12; // D6
 
 cTempHumidSensor::cTempHumidSensor()  {}
 cTempHumidSensor::~cTempHumidSensor() {}
 
 void cTempHumidSensor::setup() {
     LOG_INFO("Starting Temperature and humidity sensor");
-    dht.setup(dht_pin, DHTesp::DHT22);
+    dht.setup(DHT_PIN, DHTesp::DHT22);
     // Check it is working
     get();
 }

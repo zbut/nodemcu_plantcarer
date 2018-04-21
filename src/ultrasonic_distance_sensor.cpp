@@ -10,11 +10,7 @@
 #include "arduino.h"
 #include "logger.hpp"
 #include "status.hpp"
-
-// defines pins numbers
-// Black is gnd and blue is vcc
-const int trigPin = 2;  //D4 - Green
-const int echoPin = 14;  //D5 - Yellow
+#include "config.hpp"
 
 // defines variables
 long duration;
@@ -24,8 +20,8 @@ cUltrasonicDistanceSensor::cUltrasonicDistanceSensor()  {}
 cUltrasonicDistanceSensor::~cUltrasonicDistanceSensor() {}
 
 void cUltrasonicDistanceSensor::setup() {
-    pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-    pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+    pinMode(HC_SR04_TRIG_PIN, OUTPUT); // Sets the trigPin as an Output
+    pinMode(HC_SR04_ECHO_PIN, INPUT); // Sets the echoPin as an Input
     // Check it is working
     int distance = get_distance();
     if (distance == 0) {
@@ -40,16 +36,16 @@ void cUltrasonicDistanceSensor::loop() {
 int cUltrasonicDistanceSensor::get_distance() {
     LOG_INFO("Measuring distance");
     // Clears the trigPin
-    digitalWrite(trigPin, LOW);
+    digitalWrite(HC_SR04_TRIG_PIN, LOW);
     delayMicroseconds(2);
 
     // Sets the trigPin on HIGH state for 10 micro seconds
-    digitalWrite(trigPin, HIGH);
+    digitalWrite(HC_SR04_TRIG_PIN, HIGH);
     delayMicroseconds(10);
-    digitalWrite(trigPin, LOW);
+    digitalWrite(HC_SR04_TRIG_PIN, LOW);
 
     // Reads the echoPin, returns the sound wave travel time in microseconds
-    duration = pulseIn(echoPin, HIGH);
+    duration = pulseIn(HC_SR04_ECHO_PIN, HIGH);
 
     // Calculating the distance
     distance= duration*0.034/2;
