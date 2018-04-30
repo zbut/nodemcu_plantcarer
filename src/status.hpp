@@ -11,6 +11,8 @@
 
 #include <arduino.h>
 
+enum eWaterLevel { WaterLevelHigh, WaterLevelMedium, WaterLevelLow, WaterLevelNone };
+
 struct sStatus {
     bool wifi_connected;
     int temperature;
@@ -18,6 +20,7 @@ struct sStatus {
     bool pump_working;
 
     inline void set_null() {wifi_connected = false; temperature = -1; water_level = -1; pump_working = false;};
+    eWaterLevel get_water_level_enum();
 };
 
 class cStatus {

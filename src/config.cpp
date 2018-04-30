@@ -21,5 +21,7 @@ const sConfig CONFIG = {
             .pump_off_period = {.day = 0, .hour = 7, .minute = 0, .second = 0},
             .pump_on_period = {.day = 0, .hour = 0, .minute = 8, .second = 0},
 
-        }
+        },
+
+        .water_level = {.tank_hight_cm = 32},
 };

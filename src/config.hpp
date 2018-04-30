@@ -41,9 +41,14 @@ struct sConfigPumpTimes {
     const sPumpTime pump_on_period;
 };
 
+struct sConfigWaterLevel {
+    const int tank_hight_cm;
+};
+
 struct sConfig {
     sConfigWifi wifi;
     sConfigPumpTimes pump_times;
+    sConfigWaterLevel water_level;
 };
 
 extern const sConfig CONFIG;

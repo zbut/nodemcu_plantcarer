@@ -7,6 +7,8 @@
 //
 
 #include "status.hpp"
+#include "config.hpp"
+#include "logger.hpp"
 
 cStatus status_inst;
 
@@ -19,35 +21,47 @@ cStatus::cStatus() {
 }
 cStatus::~cStatus() {}
 
-sStatus cStatus::get() { return m_status; };
+sStatus cStatus::get() { return m_status; }
 
 void cStatus::set_wifi_connected(bool connected) {
     if (connected != m_status.wifi_connected) {
         m_status.wifi_connected = connected;
         m_status_changed = true;
     }
-};
+}
 
 void cStatus::set_temperature(int temperature) {
     if (temperature != m_status.temperature) {
         m_status.temperature = temperature;
         m_status_changed = true;
     }
-};
+}
 
 void cStatus::set_water_level(int water_level) {
     if (water_level != m_status.water_level) {
         m_status.water_level = water_level;
         m_status_changed = true;
     }
-};
+}
 
 void cStatus::set_pump_working(bool working) {
     if (working != m_status.pump_working) {
         m_status.pump_working = working;
         m_status_changed = true;
     }
-};
+}
+
+eWaterLevel sStatus::get_water_level_enum() {
+    if (CONFIG.water_level.tank_hight_cm < water_level) {
+        LOG_ERROR("Water level %d is beyond tank hight %d", water_level, CONFIG.water_level.tank_hight_cm);
+        return WaterLevelNone;
+    }
+    float water_ratio = (CONFIG.water_level.tank_hight_cm - water_level) / CONFIG.water_level.tank_hight_cm;
+    if (water_ratio > 0.75) return WaterLevelHigh;
+    if (water_ratio > 0.5)  return WaterLevelMedium;
+    if (water_ratio > 0.25) return WaterLevelLow;
+    return WaterLevelNone;
+}
 
 bool cStatus::was_changed() { return m_status_changed; };
 void cStatus::clean_changed() { m_status_changed = false; };

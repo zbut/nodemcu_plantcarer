@@ -56,9 +56,13 @@ void cWaterPump::loop() {
 }
 
 void cWaterPump::turn_on() {
-    LOG_INFO("Turning on pump");
-    digitalWrite( PUMP_PIN, 1 );
-    status_set_pump_working(true);
+    if (status_get().get_water_level_enum() != WaterLevelNone) {
+        LOG_INFO("Turning on pump");
+        digitalWrite( PUMP_PIN, 1 );
+        status_set_pump_working(true);
+    } else {
+        LOG_ERROR("Did not activate pump due to not enough water");
+    }
 }
 
 void cWaterPump::turn_off() {
