@@ -28,21 +28,13 @@ void cLogger::log( cLogger::eLevel level,  const __FlashStringHelper* format_fla
    // make the level visible
    const char log_level_desc[] = { 'D','I','W','E', 'F' };
 
-   sTime time_struct;
-   GET_TIME(&time_struct);
+   RtcDateTime time_struct = GET_TIME();
 
    // the last zero will never get overwritten
    strncpy_P( m_format, (const char*)format_flash, MAX_LINE_LEN - 1);
 
-   int prefix_len;
-   if (time_struct.is_up_time) {
-       prefix_len = snprintf( m_buffer , MAX_LINE_LEN, "[%04u:%02u:%02u]U %c:",
-                        time_struct.hours, time_struct.minutes, time_struct.seconds, log_level_desc[int(level)] );
-   }
-   else {
-       prefix_len = snprintf( m_buffer , MAX_LINE_LEN, "[%02u:%02u:%02u]R %c:",
-                        time_struct.hours, time_struct.minutes, time_struct.seconds, log_level_desc[int(level)] );
-   }
+   int prefix_len = snprintf( m_buffer , MAX_LINE_LEN, "[%02u:%02u:%02u]R %c:",
+                        time_struct.Hour(), time_struct.Minute(), time_struct.Second(), log_level_desc[int(level)] );
    // fits or not, we have zeroed the whole thing so there will be ending zero.
    int print_len = vsnprintf( m_buffer + prefix_len,  MAX_LINE_LEN - prefix_len - 1, m_format, argument_list );
 

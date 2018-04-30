@@ -16,11 +16,15 @@
 
 #include "rtc_w_ntp.hpp"
 #include "logger.hpp"
-#include <TimeLib.h>
-
+/* for normal hardware wire use below */
+#include <Wire.h> // must be included here so that Arduino library object file references work
+#include <RtcDS3231.h>
+RtcDS3231<TwoWire> Rtc(Wire);
+/* for normal hardware wire use above */
 cRtcWNtp rtc_w_ntp_inst;
 
-cRtcWNtp::cRtcWNtp(): m_time_ready(false) {};
+
+cRtcWNtp::cRtcWNtp() {};
 cRtcWNtp::~cRtcWNtp() {};
 
 // local port to listen for UDP packets
@@ -73,7 +77,6 @@ void sendNTPpacket(IPAddress& address) {
 }
 
 time_t getNtpTime() {
-    rtc_w_ntp_inst.disable_get_time();
   IPAddress ntpServerIP; // NTP server's ip address
 
   while (udp.parsePacket() > 0) ; // discard any previously received packets
@@ -93,45 +96,44 @@ time_t getNtpTime() {
       secsSince1900 |= (unsigned long)packetBuffer[41] << 16;
       secsSince1900 |= (unsigned long)packetBuffer[42] << 8;
       secsSince1900 |= (unsigned long)packetBuffer[43];
-      rtc_w_ntp_inst.enable_get_time();
-      return secsSince1900 - 2208988800UL + timeZone * SECS_PER_HOUR;
+      return secsSince1900 - 2208988800UL + timeZone * 60 * 60;
     }
   }
   LOG_ERROR("No NTP Response :-(");
-  rtc_w_ntp_inst.disable_get_time();
   return 0; // return 0 if unable to get the time
 }
 
+void set_time_from_ntp_if_needed() {
+    if (!Rtc.IsDateTimeValid()) {
+        // Common Cuases:
+        //    1) first time you ran and the device wasn't running yet
+        //    2) the battery on the device is low or even missing
+        LOG_WARNING("RTC lost confidence in the DateTime!");
+        time_t ntp_time = getNtpTime();
+        RtcDateTime rtc_date_time;
+        rtc_date_time.InitWithEpoch32Time(ntp_time);
+        LOG_INFO("Setting time to %d:%d:%d on %d/%d/%d", rtc_date_time.Hour(), rtc_date_time.Minute(), rtc_date_time.Second(), rtc_date_time.Day(), rtc_date_time.Month(), rtc_date_time.Year());
+        Rtc.SetDateTime(rtc_date_time);
+    }
+}
+
 void cRtcWNtp::setup() {
+    LOG_INFO("Starting rtc");
+    Rtc.Begin();
     LOG_INFO("Starting ntp");
     udp.begin(localPort);
-    LOG_INFO("waiting for sync");
-    setSyncProvider(getNtpTime);
-    setSyncInterval(300);
-    m_time_ready = true;
+    set_time_from_ntp_if_needed();
 }
 
-void cRtcWNtp::loop() {}
+void cRtcWNtp::loop() {
+    set_time_from_ntp_if_needed();
+}
 
-void cRtcWNtp::get_time(sTime* time_struct) {
-    if (m_time_ready && (timeStatus() != timeNotSet)) {
-        time_struct->hours = hour();
-        time_struct->minutes = minute();
-        time_struct->seconds = second();
-        time_struct->is_up_time = false;
-        return;
+RtcDateTime cRtcWNtp::get_time() {
+    if (Rtc.IsDateTimeValid()) {
+        return Rtc.GetDateTime();
     }
-    int seconds = millis() / 1000;
-    time_struct->seconds = seconds % 60;
-    time_struct->minutes = (seconds / 60) % 60;
-    time_struct->hours = seconds / 3600;
-    time_struct->is_up_time = true;
-}
-
-void cRtcWNtp::disable_get_time() {
-    m_time_ready = false;
-}
-
-void cRtcWNtp::enable_get_time() {
-    m_time_ready = true;
+    RtcDateTime now;
+    now.InitWithEpoch32Time(0);
+    return now;
 }

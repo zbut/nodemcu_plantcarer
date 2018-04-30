@@ -12,17 +12,10 @@
 #include <device.hpp>
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
-
-struct sTime {
-   unsigned int hours;
-   unsigned int minutes;
-   unsigned int seconds;
-   bool is_up_time;
-};
+#include "RtcDateTime.h"
 
 class cRtcWNtp : public cDevice {
 private:
-    bool m_time_ready;
 public:
     cRtcWNtp();
     ~cRtcWNtp();
@@ -30,10 +23,7 @@ public:
     void setup() override;
     void loop() override;
 
-    void get_time(sTime* time_struct);
-
-    void disable_get_time();
-    void enable_get_time();
+    RtcDateTime get_time();
 protected:
 
 };
