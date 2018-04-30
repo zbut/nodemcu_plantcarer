@@ -22,7 +22,7 @@ struct sPumpTime {
     const uint8_t minute;
     const uint8_t second;
 
-    inline int to_sec() const {return second + minute * 60 + hour * 60 * 60 + day * 24 *60 * 60;};
+    inline uint32_t to_sec() const {return second + minute * 60 + hour * 60 * 60 + day * 24 *60 * 60;};
     inline bool operator < (const sPumpTime& other) {return to_sec() < other.to_sec();};
     inline bool operator > (const sPumpTime& other) {return to_sec() > other.to_sec();};
     inline bool operator <= (const sPumpTime& other) {return to_sec() <= other.to_sec();};

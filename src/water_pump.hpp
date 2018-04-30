@@ -13,7 +13,6 @@
 
 class cWaterPump : cDevice {
 private:
-    bool status;
 public:
     cWaterPump();
     ~cWaterPump();
@@ -22,7 +21,6 @@ public:
     void loop() override;
     void turn_on();
     void turn_off();
-    bool is_working();
 protected:
 
 };
