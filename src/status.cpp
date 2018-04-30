@@ -56,6 +56,10 @@ eWaterLevel sStatus::get_water_level_enum() {
         LOG_ERROR("Water level %d is beyond tank hight %d", water_level, CONFIG.water_level.tank_hight_cm);
         return WaterLevelNone;
     }
+    // Distance sensor not working properly
+    if (water_level == 0) {
+        return WaterLevelNone;
+    }
     float water_ratio = (CONFIG.water_level.tank_hight_cm - water_level) / CONFIG.water_level.tank_hight_cm;
     if (water_ratio > 0.75) return WaterLevelHigh;
     if (water_ratio > 0.5)  return WaterLevelMedium;
