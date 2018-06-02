@@ -2,7 +2,7 @@
 #include "Arduino.h"
 
 cSerial::cSerial() {
-    Serial.begin(9600);
+    Serial.begin(115200);
     Serial.println("---------------------------------");
     Serial.println("      Welcome to plantcarer      ");
     Serial.println("---------------------------------");

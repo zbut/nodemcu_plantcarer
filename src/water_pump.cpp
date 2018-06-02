@@ -17,6 +17,7 @@ cWaterPump::cWaterPump() {}
 cWaterPump::~cWaterPump() {}
 
 void cWaterPump::setup() {
+    LOG_INFO("Starting water pump");
     pinMode( PUMP_PIN, OUTPUT );
     digitalWrite( PUMP_PIN, 0 );
     status_set_pump_working(false);
@@ -40,17 +41,21 @@ void cWaterPump::loop() {
     }
     uint32_t total_period = CONFIG.pump_times.pump_on_period.to_sec() + CONFIG.pump_times.pump_off_period.to_sec();
     RtcDateTime time_from_active_start = now - today_active_start;
-    uint32_t period_num = time_from_active_start.TotalSeconds() % total_period;
+    uint32_t period_num = time_from_active_start.TotalSeconds() / total_period;
     uint32_t time_in_period = time_from_active_start.TotalSeconds() - period_num * total_period;
     // First part of the period is one
     bool should_be_on = time_in_period < CONFIG.pump_times.pump_on_period.to_sec();
     if (should_be_on && !status) {
         turn_on();
+        status_set_last_water_time(now);
     } else {
         if (!should_be_on && status) {
             turn_off();
         } else {
-            LOG_ERROR("Unrecognized status of pump: Should be on %d and currently %d", should_be_on, status);
+          if (should_be_on && status && (status_get().get_water_level_enum() == WaterLevelNone)) {
+            LOG_ERROR("Water level dropped below limit during on period");
+            turn_off();
+          }
         }
     }
 }

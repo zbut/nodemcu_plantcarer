@@ -51,6 +51,13 @@ void cStatus::set_pump_working(bool working) {
     }
 }
 
+void cStatus::set_last_water_time(RtcDateTime water_time) {
+    if (water_time != m_status.last_water_time) {
+        m_status.last_water_time = water_time;
+        m_status_changed = true;
+    }
+}
+
 eWaterLevel sStatus::get_water_level_enum() {
     if (CONFIG.water_level.tank_hight_cm < water_level) {
         LOG_ERROR("Water level %d is beyond tank hight %d", water_level, CONFIG.water_level.tank_hight_cm);
@@ -60,7 +67,7 @@ eWaterLevel sStatus::get_water_level_enum() {
     if (water_level == 0) {
         return WaterLevelNone;
     }
-    float water_ratio = (CONFIG.water_level.tank_hight_cm - water_level) / CONFIG.water_level.tank_hight_cm;
+    float water_ratio = float(CONFIG.water_level.tank_hight_cm - water_level) / CONFIG.water_level.tank_hight_cm;
     if (water_ratio > 0.75) return WaterLevelHigh;
     if (water_ratio > 0.5)  return WaterLevelMedium;
     if (water_ratio > 0.25) return WaterLevelLow;
@@ -74,6 +81,7 @@ void status_set_wifi_connected(bool wifi_connected) { status_inst.set_wifi_conne
 void status_set_temperature(int temperature) { status_inst.set_temperature(temperature); };
 void status_set_water_level(int water_level) { status_inst.set_water_level(water_level); };
 void status_set_pump_working(bool working) { status_inst.set_pump_working(working); };
+void status_set_last_water_time(RtcDateTime water_time) { status_inst.set_last_water_time(water_time); };
 sStatus status_get() { return status_inst.get();};
 bool status_was_changed() { return status_inst.was_changed(); };
 void status_clear_changed() { status_inst.clean_changed(); };

@@ -38,7 +38,7 @@ void cLcd::print_status(bool force) {
         sStatus status = status_get();
         status_clear_changed();
         lcd_i2c.clear();
-        lcd_i2c.print("Status: Wifi:");
+        lcd_i2c.print("Wifi:");
         bool wifi = status.wifi_connected;
         if (wifi) {
             lcd_i2c.print("O.K.");
@@ -48,7 +48,7 @@ void cLcd::print_status(bool force) {
         }
         lcd_i2c.setCursor(0, 1);
         char status_line[16];
-        snprintf( status_line , 16, "T:%02i WL:%02i", status.temperature, status.water_level );
+        snprintf( status_line , 16, "WL:%02i LW:%02u:%02u", status.water_level, status.last_water_time.Hour(), status.last_water_time.Minute() );
         lcd_i2c.print(status_line);
     }
 }

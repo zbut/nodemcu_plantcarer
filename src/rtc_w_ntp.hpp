@@ -32,5 +32,6 @@ extern cRtcWNtp rtc_w_ntp_inst;
 
 #define GET_TIME(time_struct) rtc_w_ntp_inst.get_time(time_struct)
 #define SETUP_TIME() rtc_w_ntp_inst.setup()
+#define LOOP_TIME() rtc_w_ntp_inst.loop()
 
 #endif /* ntp_hpp */

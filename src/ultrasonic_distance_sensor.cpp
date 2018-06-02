@@ -31,7 +31,6 @@ void cUltrasonicDistanceSensor::loop() {
 }
 
 int cUltrasonicDistanceSensor::get_distance() {
-    LOG_INFO("Measuring distance");
     // Clears the trigPin
     digitalWrite(HC_SR04_TRIG_PIN, LOW);
     delayMicroseconds(2);

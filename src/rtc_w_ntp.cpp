@@ -16,6 +16,7 @@
 
 #include "rtc_w_ntp.hpp"
 #include "logger.hpp"
+#include "status.hpp"
 /* for normal hardware wire use below */
 #include <Wire.h> // must be included here so that Arduino library object file references work
 #include <RtcDS3231.h>
@@ -127,6 +128,9 @@ void cRtcWNtp::setup() {
 
 void cRtcWNtp::loop() {
     set_time_from_ntp_if_needed();
+    RtcTemperature temp = Rtc.GetTemperature();
+    int temp_int = 100 + int(temp.AsFloatDegC());
+    status_set_temperature(temp_int);
 }
 
 RtcDateTime cRtcWNtp::get_time() {
