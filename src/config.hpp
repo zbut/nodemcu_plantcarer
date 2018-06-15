@@ -11,9 +11,9 @@
 #include "arduino.h"
 
 struct sConfigWifi {
-    const char* ssid;
-    const char* password;
-    const int   connection_timout_sec;
+    const char*   ssid;
+    const char*   password;
+    unsigned long connection_timout_sec;
 };
 
 struct sPumpTime {

@@ -33,10 +33,8 @@ void cLogger::log( cLogger::eLevel level,  const __FlashStringHelper* format_fla
    // the last zero will never get overwritten
    strncpy_P( m_format, (const char*)format_flash, MAX_LINE_LEN - 1);
 
-   int prefix_len = snprintf( m_buffer , MAX_LINE_LEN, "[%02u:%02u:%02u]R %c:",
-                        time_struct.Hour(), time_struct.Minute(), time_struct.Second(), log_level_desc[int(level)] );
-   // fits or not, we have zeroed the whole thing so there will be ending zero.
-   int print_len = vsnprintf( m_buffer + prefix_len,  MAX_LINE_LEN - prefix_len - 1, m_format, argument_list );
+   snprintf( m_buffer , MAX_LINE_LEN, "[%02u:%02u:%02u]R %c:",
+            time_struct.Hour(), time_struct.Minute(), time_struct.Second(), log_level_desc[int(level)] );
 
    va_end( argument_list );
    m_serial.println(m_buffer);

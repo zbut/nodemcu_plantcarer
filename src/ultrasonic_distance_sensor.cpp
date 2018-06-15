@@ -23,7 +23,7 @@ void cUltrasonicDistanceSensor::setup() {
     pinMode(HC_SR04_TRIG_PIN, OUTPUT); // Sets the trigPin as an Output
     pinMode(HC_SR04_ECHO_PIN, INPUT); // Sets the echoPin as an Input
     // Check it is working
-    int distance = get_distance();
+    get_distance();
 }
 
 void cUltrasonicDistanceSensor::loop() {
