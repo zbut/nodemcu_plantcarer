@@ -12,6 +12,7 @@
 #include "web_server.hpp"
 #include "lcd.hpp"
 #include "water_pump.hpp"
+#include "ota_update.hpp"
 
 // Set LED_BUILTIN if it is not defined by Arduino framework
 // #define LED_BUILTIN 13
@@ -21,6 +22,7 @@ cUltrasonicDistanceSensor hc_sr04;
 cWebServer web_server;
 cLcd lcd;
 cWaterPump water_pump;
+cOtaUpdate ota_update;
 
 void setup()
 {
@@ -34,6 +36,7 @@ void setup()
   hc_sr04.setup();
   web_server.setup();
   water_pump.setup();
+  ota_update.setup();
 }
 
 void loop()
@@ -55,5 +58,6 @@ void loop()
   hc_sr04.loop();
   web_server.loop();
   water_pump.loop();
+  ota_update.loop();
   lcd.loop();
 }

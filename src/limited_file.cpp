@@ -8,6 +8,7 @@
 
 #include "limited_file.hpp"
 #include "FS.h"
+#include "status.hpp"
 
 cLimitedFile::cLimitedFile(const char* file_name, const size_t max_size_in_bytes) : m_file_name(file_name), m_max_size_in_bytes(max_size_in_bytes), m_current_size_in_bytes(0)  {
     SPIFFS.begin();
@@ -31,6 +32,8 @@ cLimitedFile::cLimitedFile(const char* file_name, const size_t max_size_in_bytes
 cLimitedFile::~cLimitedFile() {}
 
 int cLimitedFile::println(const char* line) {
+    if (status_get().ota_in_progress)
+      return 0;
     size_t bytes_to_add = strlen(line);
     if (bytes_to_add > m_max_size_in_bytes) {
         return 0;

@@ -74,6 +74,13 @@ eWaterLevel sStatus::get_water_level_enum() {
     return WaterLevelNone;
 }
 
+void cStatus::set_ota_in_progress(bool ota_in_progress) {
+  if (ota_in_progress != m_status.ota_in_progress) {
+    m_status.ota_in_progress = ota_in_progress;
+    m_status_changed = true;
+  }
+}
+
 bool cStatus::was_changed() { return m_status_changed; };
 void cStatus::clean_changed() { m_status_changed = false; };
 
@@ -82,6 +89,7 @@ void status_set_temperature(int temperature) { status_inst.set_temperature(tempe
 void status_set_water_level(int water_level) { status_inst.set_water_level(water_level); };
 void status_set_pump_working(bool working) { status_inst.set_pump_working(working); };
 void status_set_last_water_time(RtcDateTime water_time) { status_inst.set_last_water_time(water_time); };
+void status_set_ota_in_progress(bool ota_in_progress) {status_inst.set_ota_in_progress(ota_in_progress); };
 sStatus status_get() { return status_inst.get();};
 bool status_was_changed() { return status_inst.was_changed(); };
 void status_clear_changed() { status_inst.clean_changed(); };

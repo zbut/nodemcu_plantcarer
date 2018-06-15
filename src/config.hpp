@@ -45,10 +45,16 @@ struct sConfigWaterLevel {
     const int tank_hight_cm;
 };
 
+struct sConfigOtaUpdate {
+    const char* ota_hostname;
+    const char* ota_password;
+};
+
 struct sConfig {
     sConfigWifi wifi;
     sConfigPumpTimes pump_times;
     sConfigWaterLevel water_level;
+    sConfigOtaUpdate ota;
 };
 
 extern const sConfig CONFIG;
