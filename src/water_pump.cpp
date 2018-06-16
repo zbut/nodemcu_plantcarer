@@ -39,6 +39,10 @@ void cWaterPump::loop() {
         }
         return;
     }
+    if (status_get().ota_in_progress) {
+      LOG_INFO("Turning off pump due to ota update");
+      turn_off();
+    }
     uint32_t total_period = CONFIG.pump_times.pump_on_period.to_sec() + CONFIG.pump_times.pump_off_period.to_sec();
     RtcDateTime time_from_active_start = now - today_active_start;
     uint32_t period_num = time_from_active_start.TotalSeconds() / total_period;

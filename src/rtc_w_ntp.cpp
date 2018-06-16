@@ -104,17 +104,23 @@ time_t getNtpTime() {
   return 0; // return 0 if unable to get the time
 }
 
-void set_time_from_ntp_if_needed() {
-    if (!Rtc.IsDateTimeValid()) {
+void set_time_from_ntp_if_needed(bool force=false) {
+    if (!Rtc.IsDateTimeValid() || force) {
         // Common Cuases:
         //    1) first time you ran and the device wasn't running yet
         //    2) the battery on the device is low or even missing
-        LOG_WARNING("RTC lost confidence in the DateTime!");
+        if (!force)
+          LOG_WARNING("RTC lost confidence in the DateTime!");
         time_t ntp_time = getNtpTime();
-        RtcDateTime rtc_date_time;
-        rtc_date_time.InitWithEpoch32Time(ntp_time);
-        LOG_INFO("Setting time to %d:%d:%d on %d/%d/%d", rtc_date_time.Hour(), rtc_date_time.Minute(), rtc_date_time.Second(), rtc_date_time.Day(), rtc_date_time.Month(), rtc_date_time.Year());
-        Rtc.SetDateTime(rtc_date_time);
+        if (ntp_time != 0) {
+          RtcDateTime rtc_date_time;
+          rtc_date_time.InitWithEpoch32Time(ntp_time);
+          LOG_INFO("Setting time to %d:%d:%d on %d/%d/%d", rtc_date_time.Hour(), rtc_date_time.Minute(), rtc_date_time.Second(), rtc_date_time.Day(), rtc_date_time.Month(), rtc_date_time.Year());
+          Rtc.SetDateTime(rtc_date_time);
+        }
+        else {
+          LOG_WARNING("Did not update RTC due to no ntp");
+        }
     }
 }
 
@@ -123,7 +129,7 @@ void cRtcWNtp::setup() {
     Rtc.Begin();
     LOG_INFO("Starting ntp");
     udp.begin(localPort);
-    set_time_from_ntp_if_needed();
+    set_time_from_ntp_if_needed(true);
 }
 
 void cRtcWNtp::loop() {
