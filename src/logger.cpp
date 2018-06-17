@@ -13,7 +13,7 @@
 
 cLogger logger_inst;
 
-cLogger::cLogger() : m_serial(), m_log_file("/log_file.txt", 2000) {
+cLogger::cLogger() : m_serial(), m_log_file("/log_file.txt", 5000) {
 
 }
 cLogger::~cLogger() {}
