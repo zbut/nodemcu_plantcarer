@@ -69,6 +69,7 @@ void cWaterPump::turn_on() {
         LOG_INFO("Turning on pump");
         digitalWrite( PUMP_PIN, 1 );
         status_set_pump_working(true);
+        status_report_water_level();
     } else {
         LOG_ERROR("Did not activate pump due to not enough water");
     }
@@ -78,4 +79,5 @@ void cWaterPump::turn_off() {
     LOG_INFO("Turning off pump");
     digitalWrite( PUMP_PIN, 0 );
     status_set_pump_working(false);
+    status_report_water_level();
 }

@@ -44,6 +44,7 @@ public:
     void set_pump_working(bool working);
     void set_last_water_time(RtcDateTime water_time);
     void set_ota_in_progress(bool ota_in_progress);
+    void report_water_level();
     bool was_changed();
     void clean_changed();
 protected:
@@ -58,6 +59,7 @@ void status_set_water_level(int water_level);
 void status_set_pump_working(bool working);
 void status_set_last_water_time(RtcDateTime water_time);
 void status_set_ota_in_progress(bool ota_in_progress);
+void status_report_water_level();
 sStatus status_get();
 bool status_was_changed();
 void status_clear_changed();

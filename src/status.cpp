@@ -81,6 +81,10 @@ void cStatus::set_ota_in_progress(bool ota_in_progress) {
   }
 }
 
+void cStatus::report_water_level() {
+  LOG_INFO("Water level is %d cm", CONFIG.water_level.tank_hight_cm < m_status.water_level);
+}
+
 bool cStatus::was_changed() { return m_status_changed; };
 void cStatus::clean_changed() { m_status_changed = false; };
 
@@ -90,6 +94,7 @@ void status_set_water_level(int water_level) { status_inst.set_water_level(water
 void status_set_pump_working(bool working) { status_inst.set_pump_working(working); };
 void status_set_last_water_time(RtcDateTime water_time) { status_inst.set_last_water_time(water_time); };
 void status_set_ota_in_progress(bool ota_in_progress) {status_inst.set_ota_in_progress(ota_in_progress); };
+void status_report_water_level() {status_inst.report_water_level();}
 sStatus status_get() { return status_inst.get();};
 bool status_was_changed() { return status_inst.was_changed(); };
 void status_clear_changed() { status_inst.clean_changed(); };
