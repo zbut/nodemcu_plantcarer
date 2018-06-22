@@ -44,6 +44,7 @@ int cLimitedFile::println(const char* line) {
     if (log_file) {
         ret_val = log_file.println(line);
     }
+    m_current_size_in_bytes += ret_val;
     log_file.close();
     return ret_val;
 }
@@ -53,7 +54,8 @@ void cLimitedFile::check_size_and_empty_if_needed(const size_t bytes_to_add) {
     if (m_current_size_in_bytes + bytes_to_add > m_max_size_in_bytes) {
         File log_file = SPIFFS.open(m_file_name, "w");
         if (log_file) {
-            log_file.println("Restarting limited file");
+            m_current_size_in_bytes = 0;
+            log_file.println("Restarting limited file.");
         }
         log_file.close();
     }
