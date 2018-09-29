@@ -48,7 +48,7 @@ void cLcd::print_status(bool force) {
         }
         lcd_i2c.setCursor(0, 1);
         char status_line[16];
-        snprintf( status_line , 16, "WL:%02i LW:%02u:%02u", status.water_level, status.last_water_time.Hour(), status.last_water_time.Minute() );
+        snprintf( status_line , 16, "WL:%02i LW:%02u:%02u", status.water_level, status.last_water_time.Day(), status.last_water_time.Month() );
         lcd_i2c.print(status_line);
     }
 }
