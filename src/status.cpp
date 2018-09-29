@@ -68,9 +68,9 @@ eWaterLevel sStatus::get_water_level_enum() {
         return WaterLevelNone;
     }
     float water_ratio = float(CONFIG.water_level.tank_hight_cm - water_level) / CONFIG.water_level.tank_hight_cm;
-    if (water_ratio > 0.75) return WaterLevelHigh;
-    if (water_ratio > 0.5)  return WaterLevelMedium;
-    if (water_ratio > 0.25) return WaterLevelLow;
+    if (water_ratio > 0.6) return WaterLevelHigh;
+    if (water_ratio > 0.4)  return WaterLevelMedium;
+    if (water_ratio > 0.1) return WaterLevelLow;
     return WaterLevelNone;
 }
 
@@ -82,7 +82,7 @@ void cStatus::set_ota_in_progress(bool ota_in_progress) {
 }
 
 void cStatus::report_water_level() {
-  LOG_INFO("Water level is %d cm", CONFIG.water_level.tank_hight_cm < m_status.water_level);
+  LOG_INFO("Water level is %d cm", m_status.water_level);
 }
 
 bool cStatus::was_changed() { return m_status_changed; };
