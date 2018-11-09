@@ -36,7 +36,6 @@ void cLcd::print_line(const char* line) {
 void cLcd::print_status(bool force) {
     if (status_was_changed() || force) {
         sStatus status = status_get();
-        status_clear_changed();
         lcd_i2c.clear();
         lcd_i2c.print("Wifi:");
         bool wifi = status.wifi_connected;

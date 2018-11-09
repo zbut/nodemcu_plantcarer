@@ -13,6 +13,8 @@
 #include "lcd.hpp"
 #include "water_pump.hpp"
 #include "ota_update.hpp"
+#include "thingspeak.hpp"
+#include "status.hpp"
 
 // Set LED_BUILTIN if it is not defined by Arduino framework
 // #define LED_BUILTIN 13
@@ -23,6 +25,7 @@ cWebServer web_server;
 cLcd lcd;
 cWaterPump water_pump;
 cOtaUpdate ota_update;
+cThingspeak thingspeak;
 
 void setup()
 {
@@ -37,6 +40,7 @@ void setup()
   web_server.setup();
   water_pump.setup();
   ota_update.setup();
+  thingspeak.setup();
 }
 
 void loop()
@@ -59,5 +63,7 @@ void loop()
   web_server.loop();
   water_pump.loop();
   ota_update.loop();
+  thingspeak.loop();
   lcd.loop();
+  status_clear_changed();
 }
