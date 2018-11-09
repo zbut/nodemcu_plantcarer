@@ -50,19 +50,26 @@ struct sConfigOtaUpdate {
     const char* ota_password;
 };
 
+struct sConfigThingspeak
+{
+   const char* host;
+   const char* api_key;
+};
+
 struct sConfig {
     sConfigWifi wifi;
     sConfigPumpTimes pump_times;
     sConfigWaterLevel water_level;
     sConfigOtaUpdate ota;
+    sConfigThingspeak thingspeak;
 };
 
 extern const sConfig CONFIG;
 
-#define DHT_PIN 12 // D6
 // Black is gnd and blue is vcc
 #define HC_SR04_TRIG_PIN 2  //D4 - Green
 #define HC_SR04_ECHO_PIN 14  //D5 - Yellow
 #define PUMP_PIN 13 // D7
+#define RTC_INT_PIN 0 // D3
 
 #endif /* config_hpp */

@@ -10,16 +10,16 @@
 
 const sConfig CONFIG = {
         .wifi = {
-            .ssid = "None",
-            .password = "",
+            .ssid = "xxxx",
+            .password = "xxxx",
             .connection_timout_sec = 10,
         },
 
         .pump_times = {
             .active_time_of_day_start = {.day = 0, .hour = 5, .minute = 0, .second = 0},
-            .active_time_of_day_end = {.day = 0, .hour = 22, .minute = 0, .second = 0},
-            .pump_off_period = {.day = 0, .hour = 0, .minute = 1, .second = 0},
-            .pump_on_period = {.day = 0, .hour = 0, .minute = 1, .second = 0},
+            .active_time_of_day_end = {.day = 0, .hour = 6, .minute = 0, .second = 0},
+            .pump_off_period = {.day = 0, .hour = 1, .minute = 0, .second = 0},
+            .pump_on_period = {.day = 0, .hour = 0, .minute = 7, .second = 0},
 
         },
 
@@ -29,4 +29,9 @@ const sConfig CONFIG = {
           .ota_hostname = "plantcarer",
           .ota_password = "xxx"
         },
+
+        .thingspeak = {
+          .host = "api.thingspeak.com",
+          .api_key = "APIKEYHERE"
+        }
 };
