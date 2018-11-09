@@ -56,7 +56,6 @@ String getContentType(String filename){
 }
 
 bool handleFileRead(String path){
-  LOG_INFO("handleFileRead: %s", path.c_str());
   if(path.endsWith("/")) path += "index.htm";
   String contentType = getContentType(path);
   String pathWithGz = path + ".gz";
@@ -126,7 +125,6 @@ void handleFileList() {
   if(!server.hasArg("dir")) {server.send(500, "text/plain", "BAD ARGS"); return;}
 
   String path = server.arg("dir");
-  LOG_INFO("handleFileList: %s", path.c_str());
   Dir dir = SPIFFS.openDir(path);
   path = String();
 
