@@ -21,7 +21,7 @@ struct sStatus {
     bool pump_working;
     RtcDateTime last_water_time;
     bool ota_in_progress;
-
+    String last_error;
     inline void set_null() {wifi_connected = false; temperature = -1; water_level = -1; pump_working = false;};
     eWaterLevel get_water_level_enum();
 };
@@ -44,6 +44,7 @@ public:
     void set_pump_working(bool working);
     void set_last_water_time(RtcDateTime water_time);
     void set_ota_in_progress(bool ota_in_progress);
+    void set_last_error(const char* error_line);
     void report_water_level();
     bool was_changed();
     void clean_changed();
@@ -59,6 +60,7 @@ void status_set_water_level(int water_level);
 void status_set_pump_working(bool working);
 void status_set_last_water_time(RtcDateTime water_time);
 void status_set_ota_in_progress(bool ota_in_progress);
+void status_set_last_error(const char* error_line);
 void status_report_water_level();
 sStatus status_get();
 bool status_was_changed();

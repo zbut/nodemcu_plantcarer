@@ -10,6 +10,7 @@
 #include "serial.hpp"
 #include "rtc_w_ntp.hpp"
 #include "FS.h"
+#include "status.hpp"
 
 cLogger logger_inst;
 
@@ -41,4 +42,7 @@ void cLogger::log( cLogger::eLevel level,  const __FlashStringHelper* format_fla
    va_end( argument_list );
    m_serial.println(m_buffer);
    m_log_file.println(m_buffer);
+   if (level > cLogger::eLevel::INFO) {
+     status_set_last_error(m_buffer);
+   }
 }
