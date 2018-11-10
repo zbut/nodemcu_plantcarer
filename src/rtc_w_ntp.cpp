@@ -48,7 +48,7 @@ static const char ntpServerName[] = "us.pool.ntp.org";
 //const int timeZone = -4;  // Eastern Daylight Time (USA)
 //const int timeZone = -8;  // Pacific Standard Time (USA)
 //const int timeZone = -7;  // Pacific Daylight Time (USA)
-const int timeZone = 3;  // Israel
+const int timeZone = 2;  // Israel
 
 const int NTP_PACKET_SIZE = 48; // NTP time stamp is in the first 48 bytes of the message
 
@@ -171,9 +171,9 @@ void cRtcWNtp::setup() {
 
 void cRtcWNtp::loop() {
     set_time_from_ntp_if_needed();
-    RtcTemperature temp = Rtc.GetTemperature();
-    int temp_int = 100 + int(temp.AsFloatDegC());
-    STAT.set_temperature(temp_int);
+    // Turn it off anyway
+    TIMER.set_alarm_off(ONCE_PER_DAY_ALARM);
+    TIMER.set_alarm_off(LOOP_ALARM);
 
     if (alarm_interupt_flag) {
         alarm_interupt_flag = false; // reset the flag
@@ -184,10 +184,17 @@ void cRtcWNtp::loop() {
 
         if (flag & DS3231AlarmFlag_Alarm1) {
             LOG_INFO("alarm one triggered");
+            TIMER.set_alarm_on(ONCE_PER_DAY_ALARM);
         }
         if (flag & DS3231AlarmFlag_Alarm2) {
-            LOG_INFO("alarm two triggered");
+            TIMER.set_alarm_on(LOOP_ALARM);
         }
+    }
+    // No need to do it every time
+    if (TIMER.is_alarm_on(LOOP_ALARM)) {
+      RtcTemperature temp = Rtc.GetTemperature();
+      int temp_int = 100 + int(temp.AsFloatDegC());
+      STAT.set_temperature(temp_int);
     }
 }
 
@@ -198,4 +205,30 @@ RtcDateTime cRtcWNtp::get_time() {
     RtcDateTime now;
     now.InitWithEpoch32Time(0);
     return now;
+}
+
+sTimer TIMER;
+
+sTimer::sTimer() : alarms({false, false}) {};
+sTimer::~sTimer() {};
+
+void sTimer::set_alarm_on(uint8_t alarm_num) {
+  if (alarm_num > alarms.size()) {
+    LOG_ERROR("Bad alarm num: %d", alarm_num);
+  }
+  alarms[alarm_num] = true;
+}
+
+void sTimer::set_alarm_off(uint8_t alarm_num) {
+  if (alarm_num > alarms.size()) {
+    LOG_ERROR("Bad alarm num: %d", alarm_num);
+  }
+  alarms[alarm_num] = false;
+}
+
+bool sTimer::is_alarm_on(uint8_t alarm_num) const {
+  if (alarm_num > alarms.size()) {
+    LOG_ERROR("Bad alarm num: %d", alarm_num);
+  }
+  return alarms[alarm_num];
 }

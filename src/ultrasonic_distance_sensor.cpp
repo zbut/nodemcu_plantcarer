@@ -11,6 +11,7 @@
 #include "logger.hpp"
 #include "status.hpp"
 #include "config.hpp"
+#include "rtc_w_ntp.hpp"
 
 // defines variables
 long duration;
@@ -27,7 +28,9 @@ void cUltrasonicDistanceSensor::setup() {
 }
 
 void cUltrasonicDistanceSensor::loop() {
+  if (TIMER.is_alarm_on(LOOP_ALARM) || STAT.pump_working) {
     get_distance();
+  }
 }
 
 int cUltrasonicDistanceSensor::get_distance() {

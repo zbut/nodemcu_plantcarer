@@ -39,6 +39,7 @@ void cThingspeak::push_status() {
     String data_to_send = "GET /update?api_key=" + String(CONFIG.thingspeak.api_key);
     data_to_send += "&field1=" + String(CONFIG.water_level.tank_hight_cm - STAT.water_level);
     data_to_send += "&field2=" + String(STAT.pump_working);
+    data_to_send += "&field2=" + String(STAT.temperature);
     if (STAT.last_error != "") {
       data_to_send += "&status=" + STAT.last_error;
     }
