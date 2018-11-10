@@ -35,7 +35,7 @@ void cWifi::setup() {
         LOG_ERROR("Could not connect to %s", CONFIG.wifi.ssid);
         connected = false;
     }
-    status_set_wifi_connected(connected);
+    STAT.set_wifi_connected(connected);
 }
 
 void cWifi::loop() {
@@ -47,5 +47,5 @@ void cWifi::loop() {
         connected = true;
         LOG_INFO("Wifi reconnected");
     }
-    status_set_wifi_connected(connected);
+    STAT.set_wifi_connected(connected);
 };

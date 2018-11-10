@@ -25,7 +25,7 @@ void cThingspeak::loop() {
 
 void cThingspeak::push_status() {
   WiFiClientSecure client;
-  if (!status_get().wifi_connected) {
+  if (!STAT.wifi_connected) {
     LOG_WARNING("Did not push to thingspeak due to no wifi connection");
     return;
   }
@@ -34,13 +34,13 @@ void cThingspeak::push_status() {
     return;
   }
 
-  if (status_was_changed()) {
+  if (STAT.was_changed()) {
     // cbuffer "https://api.thingspeak.com/update?api_key=<api key>&field1=0&field2=12"
     String data_to_send = "GET /update?api_key=" + String(CONFIG.thingspeak.api_key);
-    data_to_send += "&field1=" + String(CONFIG.water_level.tank_hight_cm - status_get().water_level);
-    data_to_send += "&field2=" + String(status_get().pump_working);
-    if (status_get().last_error != "") {
-      data_to_send += "&status=" + status_get().last_error;
+    data_to_send += "&field1=" + String(CONFIG.water_level.tank_hight_cm - STAT.water_level);
+    data_to_send += "&field2=" + String(STAT.pump_working);
+    if (STAT.last_error != "") {
+      data_to_send += "&status=" + STAT.last_error;
     }
     data_to_send += " HTTP/1.1\r\nHost: " + String(CONFIG.thingspeak.host) + "\r\nConnection: close\r\n\r\n";
     client.write((const uint8_t *)data_to_send.c_str(), data_to_send.length());

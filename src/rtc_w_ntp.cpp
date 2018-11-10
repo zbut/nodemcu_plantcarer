@@ -17,6 +17,7 @@
 #include "rtc_w_ntp.hpp"
 #include "logger.hpp"
 #include "status.hpp"
+#include "config.hpp"
 /* for normal hardware wire use below */
 #include <Wire.h> // must be included here so that Arduino library object file references work
 #include <RtcDS3231.h>
@@ -24,6 +25,9 @@ RtcDS3231<TwoWire> Rtc(Wire);
 /* for normal hardware wire use above */
 cRtcWNtp rtc_w_ntp_inst;
 
+// marked volatile so interrupt can safely modify it and
+// other code can safely read and modify it
+volatile bool alarm_interupt_flag = false;
 
 cRtcWNtp::cRtcWNtp() {};
 cRtcWNtp::~cRtcWNtp() {};
@@ -124,19 +128,67 @@ void set_time_from_ntp_if_needed(bool force=false) {
     }
 }
 
+void InteruptServiceRoutine() {
+    alarm_interupt_flag = true;
+}
+
 void cRtcWNtp::setup() {
     LOG_INFO("Starting rtc");
+    // Setup alarams
+    pinMode(RTC_INT_PIN, INPUT_PULLUP);
+
     Rtc.Begin();
     LOG_INFO("Starting ntp");
     udp.begin(localPort);
     set_time_from_ntp_if_needed(true);
+    if (!Rtc.GetIsRunning()) {
+        LOG_INFO("RTC was not actively running, starting now");
+        Rtc.SetIsRunning(true);
+    }
+    Rtc.Enable32kHzPin(false);
+    Rtc.SetSquareWavePin(DS3231SquareWavePin_ModeAlarmBoth);
+
+    DS3231AlarmOne alarm1(
+            0,
+            CONFIG.pump_times.active_time_of_day_end.hour,
+            CONFIG.pump_times.active_time_of_day_end.minute,
+            CONFIG.pump_times.active_time_of_day_end.second,
+            DS3231AlarmOneControl_HoursMinutesSecondsMatch);
+    Rtc.SetAlarmOne(alarm1);
+
+    // Alarm 2 set to trigger at the top of the minute
+    DS3231AlarmTwo alarm2(
+            0,
+            0,
+            0,
+            DS3231AlarmTwoControl_OncePerMinute);
+    Rtc.SetAlarmTwo(alarm2);
+
+    // throw away any old alarm state before we ran
+    Rtc.LatchAlarmsTriggeredFlags();
+    attachInterrupt(RTC_INT_PIN, InteruptServiceRoutine, FALLING);
 }
 
 void cRtcWNtp::loop() {
     set_time_from_ntp_if_needed();
     RtcTemperature temp = Rtc.GetTemperature();
     int temp_int = 100 + int(temp.AsFloatDegC());
-    status_set_temperature(temp_int);
+    STAT.set_temperature(temp_int);
+
+    if (alarm_interupt_flag) {
+        alarm_interupt_flag = false; // reset the flag
+
+        // this gives us which alarms triggered and
+        // then allows for others to trigger again
+        DS3231AlarmFlag flag = Rtc.LatchAlarmsTriggeredFlags();
+
+        if (flag & DS3231AlarmFlag_Alarm1) {
+            LOG_INFO("alarm one triggered");
+        }
+        if (flag & DS3231AlarmFlag_Alarm2) {
+            LOG_INFO("alarm two triggered");
+        }
+    }
 }
 
 RtcDateTime cRtcWNtp::get_time() {

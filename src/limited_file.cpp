@@ -32,7 +32,7 @@ cLimitedFile::cLimitedFile(const char* file_name, const size_t max_size_in_bytes
 cLimitedFile::~cLimitedFile() {}
 
 int cLimitedFile::println(const char* line) {
-    if (status_get().ota_in_progress)
+    if (STAT.ota_in_progress)
       return 0;
     size_t bytes_to_add = strlen(line);
     if (bytes_to_add > m_max_size_in_bytes) {

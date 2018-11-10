@@ -65,5 +65,5 @@ void loop()
   ota_update.loop();
   thingspeak.loop();
   lcd.loop();
-  status_clear_changed();
+  STAT.clean_changed();
 }

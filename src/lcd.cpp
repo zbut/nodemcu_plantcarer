@@ -34,11 +34,10 @@ void cLcd::print_line(const char* line) {
 }
 
 void cLcd::print_status(bool force) {
-    if (status_was_changed() || force) {
-        sStatus status = status_get();
+    if (STAT.was_changed() || force) {
         lcd_i2c.clear();
         lcd_i2c.print("Wifi:");
-        bool wifi = status.wifi_connected;
+        bool wifi = STAT.wifi_connected;
         if (wifi) {
             lcd_i2c.print("O.K.");
         }
@@ -47,7 +46,7 @@ void cLcd::print_status(bool force) {
         }
         lcd_i2c.setCursor(0, 1);
         char status_line[16];
-        snprintf( status_line , 16, "WL:%02i LW:%02u:%02u", status.water_level, status.last_water_time.Day(), status.last_water_time.Month() );
+        snprintf( status_line , 16, "WL:%02i LW:%02u:%02u", STAT.water_level, STAT.last_water_time.Day(), STAT.last_water_time.Month() );
         lcd_i2c.print(status_line);
     }
 }

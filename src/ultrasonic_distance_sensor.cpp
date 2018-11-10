@@ -46,7 +46,7 @@ int cUltrasonicDistanceSensor::get_distance() {
     // Calculating the distance
     distance= duration*0.034/2;
     //LOG_INFO("Distance is %d cm", distance);
-    status_set_water_level(distance);
+    STAT.set_water_level(distance);
     if (distance == 0) {
         LOG_ERROR("Distance sensor is not working");
     }

@@ -20,7 +20,7 @@ void cWaterPump::setup() {
     LOG_INFO("Starting water pump");
     pinMode( PUMP_PIN, OUTPUT );
     digitalWrite( PUMP_PIN, 0 );
-    status_set_pump_working(false);
+    STAT.set_pump_working(false);
 }
 
 void cWaterPump::loop() {
@@ -30,7 +30,7 @@ void cWaterPump::loop() {
     RtcDateTime today_active_end   = today + CONFIG.pump_times.active_time_of_day_end.to_sec();
     // Check if in active hour
     bool active_time = (now > today_active_start) && (now < today_active_end);
-    bool status = status_get().pump_working;
+    bool status = STAT.pump_working;
     // If not active time, turn off if needed
     if (!active_time) {
         if (status) {
@@ -39,7 +39,7 @@ void cWaterPump::loop() {
         }
         return;
     }
-    if (status_get().ota_in_progress) {
+    if (STAT.ota_in_progress) {
       LOG_INFO("Turning off pump due to ota update");
       turn_off();
     }
@@ -51,12 +51,12 @@ void cWaterPump::loop() {
     bool should_be_on = time_in_period < CONFIG.pump_times.pump_on_period.to_sec();
     if (should_be_on && !status) {
         turn_on();
-        status_set_last_water_time(now);
+        STAT.set_last_water_time(now);
     } else {
         if (!should_be_on && status) {
             turn_off();
         } else {
-          if (should_be_on && status && (status_get().get_water_level_enum() == WaterLevelNone)) {
+          if (should_be_on && status && (STAT.get_water_level_enum() == WaterLevelNone)) {
             LOG_ERROR("Water level dropped below limit during on period");
             turn_off();
           }
@@ -65,19 +65,19 @@ void cWaterPump::loop() {
 }
 
 void cWaterPump::turn_on() {
-    if (status_get().get_water_level_enum() != WaterLevelNone) {
+    if (STAT.get_water_level_enum() != WaterLevelNone) {
         LOG_INFO("Turning on pump");
         digitalWrite( PUMP_PIN, 1 );
-        status_set_pump_working(true);
+        STAT.set_pump_working(true);
     } else {
         LOG_ERROR("Did not activate pump due to not enough water");
     }
-    status_report_water_level();
+    STAT.report_water_level();
 }
 
 void cWaterPump::turn_off() {
     LOG_INFO("Turning off pump");
     digitalWrite( PUMP_PIN, 0 );
-    status_set_pump_working(false);
-    status_report_water_level();
+    STAT.set_pump_working(false);
+    STAT.report_water_level();
 }

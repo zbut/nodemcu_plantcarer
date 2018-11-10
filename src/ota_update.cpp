@@ -25,13 +25,13 @@ void cOtaUpdate::setup() {
   {
     LOG_WARNING("Update start!");
     SPIFFS.end();
-    status_set_ota_in_progress(true);
+    STAT.set_ota_in_progress(true);
   });
 
   ArduinoOTA.onEnd([]()
   {
     LOG_WARNING("Update done!");
-    status_set_ota_in_progress(false);
+    STAT.set_ota_in_progress(false);
   });
 
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
@@ -47,7 +47,7 @@ void cOtaUpdate::setup() {
   });
 
   ArduinoOTA.onError([](ota_error_t error) {
-    status_set_ota_in_progress(false);
+    STAT.set_ota_in_progress(false);
     LOG_FATAL("Error %u during update: ", error);
   });
   ArduinoOTA.begin();

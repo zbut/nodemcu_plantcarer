@@ -43,6 +43,6 @@ void cLogger::log( cLogger::eLevel level,  const __FlashStringHelper* format_fla
    m_serial.println(m_buffer);
    m_log_file.println(m_buffer);
    if (level > cLogger::eLevel::INFO) {
-     status_set_last_error(m_buffer);
+     STAT.set_last_error(m_buffer);
    }
 }
