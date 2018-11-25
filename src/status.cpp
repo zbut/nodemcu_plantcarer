@@ -30,29 +30,29 @@ void sStatus::set_wifi_connected(bool connected) {
 }
 
 void sStatus::set_temperature(int temperature) {
-    if (temperature != temperature) {
-        temperature = temperature;
+    if (this->temperature != temperature) {
+        this->temperature = temperature;
         m_status_changed = true;
     }
 }
 
 void sStatus::set_water_level(int water_level) {
-    if (water_level != water_level) {
-        water_level = water_level;
+    if (this->water_level != water_level) {
+        this->water_level = water_level;
         m_status_changed = true;
     }
 }
 
 void sStatus::set_pump_working(bool working) {
-    if (working != pump_working) {
-        pump_working = working;
+    if (working != this->pump_working) {
+        this->pump_working = working;
         m_status_changed = true;
     }
 }
 
 void sStatus::set_last_water_time(RtcDateTime water_time) {
-    if (water_time != last_water_time) {
-        last_water_time = water_time;
+    if (water_time != this->last_water_time) {
+        this->last_water_time = water_time;
         m_status_changed = true;
     }
 }
@@ -74,8 +74,8 @@ eWaterLevel sStatus::get_water_level_enum() {
 }
 
 void sStatus::set_ota_in_progress(bool ota_in_progress) {
-  if (ota_in_progress != ota_in_progress) {
-    ota_in_progress = ota_in_progress;
+  if (this->ota_in_progress != ota_in_progress) {
+    this->ota_in_progress = ota_in_progress;
     m_status_changed = true;
   }
 }

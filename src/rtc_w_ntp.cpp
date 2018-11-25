@@ -193,7 +193,7 @@ void cRtcWNtp::loop() {
     // No need to do it every time
     if (TIMER.is_alarm_on(LOOP_ALARM)) {
       RtcTemperature temp = Rtc.GetTemperature();
-      int temp_int = 100 + int(temp.AsFloatDegC());
+      int temp_int = int(temp.AsFloatDegC());
       STAT.set_temperature(temp_int);
     }
 }
